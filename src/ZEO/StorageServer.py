@@ -343,8 +343,7 @@ class ZEOStorage:
         self.storage.pack(time, referencesf)
         self.log("pack(time=%s) complete" % repr(time))
         # Broadcast new size statistics
-        self.server.invalidate(0, self.storage_id, None,
-                               (), self.get_size_info())
+        self.server.invalidate(None, self.storage_id, info=self.get_size_info())
 
     def new_oids(self, n=100):
         """Return a sequence of n new oids, where n defaults to 100"""
@@ -414,8 +413,7 @@ class ZEOStorage:
         return Result(tid, self._clear_transaction)
 
     def _invalidate(self, tid):
-        if self.invalidated:
-            self.server.invalidate(self, self.storage_id, tid, self.invalidated)
+        self.server.invalidate(self, self.storage_id, tid, self.invalidated)
 
     def tpc_abort(self, tid):
         if not self._check_tid(tid):
@@ -1052,7 +1050,7 @@ class StorageServer:
                 pass
 
 
-    def invalidate(self, conn, storage_id, tid, invalidated=(), info=None):
+    def invalidate(self, conn, storage_id, tid=None, invalidated=None, info=None):
         """Internal: broadcast info and invalidations to clients.
 
         This is called from several ZEOStorage methods.
@@ -1098,15 +1096,18 @@ class StorageServer:
         #    to cactch and ignore Disconnected errors.
 
 
-        if invalidated:
+        if invalidated is not None:
+            assert tid is not None
             invq = self.invq[storage_id]
             if len(invq) >= self.invq_bound:
                 invq.pop()
             invq.insert(0, (tid, invalidated))
+        else:
+            assert info is not None
 
         for p in self.connections[storage_id]:
             try:
-                if invalidated and p is not conn:
+                if invalidated is not None and p is not conn:
                     p.client.invalidateTransaction(tid, invalidated)
                 elif info is not None:
                     p.client.info(info)
