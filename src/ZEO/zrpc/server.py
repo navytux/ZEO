@@ -66,6 +66,7 @@ class Dispatcher(asyncore.dispatcher):
                         socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, True)
             else:
                 self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         else:
             self.create_socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.set_reuse_addr()

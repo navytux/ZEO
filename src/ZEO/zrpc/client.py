@@ -568,6 +568,8 @@ class ConnectWrapper:
             self.close()
             return
         self.sock.setblocking(0)
+        if domain in (socket.AF_INET, socket.AF_INET6):
+            self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         self.state = "opened"
 
     def connect_procedure(self):
