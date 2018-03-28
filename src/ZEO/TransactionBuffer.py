@@ -64,7 +64,7 @@ class TransactionBuffer:
         self.blobs = []
         # It's safe to use a fast pickler because the only objects
         # stored are builtin types -- strings or None.
-        self.pickler = Pickler(self.file, 1)
+        self.pickler = Pickler(self.file, 3)
         self.pickler.fast = 1
 
     def close(self):

@@ -21,7 +21,7 @@ PY32 = sys.version_info[:2] == (3, 2)
 PYPY = getattr(platform, 'python_implementation', lambda: None)() == 'PyPy'
 
 if PY3:
-    from pickle import Pickler, Unpickler as _Unpickler, dump, dumps, loads
+    from zodbpickle.pickle import Pickler, Unpickler as _Unpickler, dump, dumps, loads
     class Unpickler(_Unpickler):
         # Py3: Python 3 doesn't allow assignments to find_global,
         # instead, find_class can be overridden
@@ -33,8 +33,15 @@ if PY3:
                 return super(Unpickler, self).find_class(modulename, name)
             return self.find_global(modulename, name)
 else:
-    # Pickle support
-    from cPickle import Pickler, Unpickler, dump, dumps, loads
+    try:
+        import zodbpickle.fastpickle as cPickle
+    except ImportError:
+        import zodbpickle.pickle as cPickle
+    Pickler = cPickle.Pickler
+    Unpickler = cPickle.Unpickler
+    dump = cPickle.dump
+    dumps = cPickle.dumps
+    loads = cPickle.loads
 
 # String and Bytes IO
 from ZODB._compat import BytesIO

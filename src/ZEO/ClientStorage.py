@@ -1302,10 +1302,7 @@ class ClientStorage(object):
         # setup tempfile to hold zeoVerify results and interim
         # invalidation results
         self._tfile = tempfile.TemporaryFile(suffix=".inv")
-        if PY3:
-            self._pickler = Pickler(self._tfile, 3)
-        else:
-            self._pickler = Pickler(self._tfile, 1)
+        self._pickler = Pickler(self._tfile, 3)
         self._pickler.fast = 1 # Don't use the memo
 
         if self._connection.peer_protocol_version < b'Z309':

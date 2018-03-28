@@ -686,7 +686,7 @@ class ZEOStorage:
             pickler = Pickler(BytesIO(), 3)
         else:
             # The pure-python version requires at least one argument (PyPy)
-            pickler = Pickler(0)
+            pickler = Pickler(3)
         pickler.fast = 1
         try:
             pickler.dump(error)
@@ -1588,7 +1588,7 @@ class CommitLog:
 
     def __init__(self):
         self.file = tempfile.TemporaryFile(suffix=".comit-log")
-        self.pickler = Pickler(self.file, 1)
+        self.pickler = Pickler(self.file, 3)
         self.pickler.fast = 1
         self.stores = 0
 

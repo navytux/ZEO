@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Nexedi-done backports
+---------------------
+
+- ZEO now uses pickle protocol 3 for both Python 2 and Python 3.
+  (Previously protocol 1 was used for Python 2.) This matches the
+  change in ZODB 5.4.0.
+
 
 4.3.1 (2016-11-18)
 ------------------
