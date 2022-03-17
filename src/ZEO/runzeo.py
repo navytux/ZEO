@@ -258,6 +258,7 @@ class ZEOServer:
     def loop_forever(self):
         if self.options.testing_exit_immediately:
             print("testing exit immediately")
+            sys.stdout.flush()  # ensure truthful output order
         else:
             self.server.loop()
 
