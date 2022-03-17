@@ -162,6 +162,9 @@ class ZEOServer:
             self.loop_forever()
         finally:
             self.server.close()
+            if self.options.testing_exit_immediately:
+                # usually, this happens automatically - but not for testing
+                self.server.acceptor.event_loop.close()
             self.clear_socket()
             self.remove_pidfile()
 
