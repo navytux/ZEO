@@ -578,22 +578,44 @@ class FullGenericTests(
                            tid_repr(zat))
 
                     msg += "zcache.loadBefore(obj1, zconn.at)  ->  "
-                    obj1cache = zcache.loadBefore(obj1._p_oid, zbefore)
-                    if obj1cache is None:
+                    x = zcache.loadBefore(obj1._p_oid, zbefore)
+                    if x is None:
                         msg += "None"
                     else:
-                        _, serial, end_tid = obj1cache
+                        _, serial, end_tid = x
                         msg += "serial: %s  end_tid: %s" % (
                                tid_repr(serial), tid_repr(end_tid))
                     msg += '\n'
 
-                    msg += "zstor.loadBefore(obj1, zconn.at)   ->  "
-                    zcache.clear()
-                    obj1data = zstor.loadBefore(obj1._p_oid, zbefore)
-                    if obj1data is None:
+                    msg += "zcache.loadBefore(obj2, zconn.at)  ->  "
+                    x = zcache.loadBefore(obj2._p_oid, zbefore)
+                    if x is None:
                         msg += "None"
                     else:
-                        _, serial, next_serial = obj1data
+                        _, serial, end_tid = x
+                        msg += "serial: %s  end_tid: %s" % (
+                               tid_repr(serial), tid_repr(end_tid))
+                    msg += '\n'
+
+
+                    zcache.clear()
+
+                    msg += "zstor.loadBefore(obj1, zconn.at)   ->  "
+                    x = zstor.loadBefore(obj1._p_oid, zbefore)
+                    if x is None:
+                        msg += "None"
+                    else:
+                        _, serial, next_serial = x
+                        msg += "serial: %s  next_serial: %s" % (
+                               tid_repr(serial), tid_repr(next_serial))
+                    msg += '\n'
+
+                    msg += "zstor.loadBefore(obj2, zconn.at)   ->  "
+                    x = zstor.loadBefore(obj2._p_oid, zbefore)
+                    if x is None:
+                        msg += "None"
+                    else:
+                        _, serial, next_serial = x
                         msg += "serial: %s  next_serial: %s" % (
                                tid_repr(serial), tid_repr(next_serial))
                     msg += '\n'
