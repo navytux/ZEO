@@ -536,8 +536,8 @@ class ClientCache(object):
     # Return a non-current revision of oid that was current before tid.
     # @param oid object id
     # @param tid id of transaction that wrote next revision of oid
-    # @return data record, serial number, start tid, and end tid
-    # @defreturn 4-tuple: (string, string, string, string)
+    # @return data record, serial number and end tid
+    # @defreturn 3-tuple: (string, string, string)
     def loadBefore(self, oid, before_tid):
         with self._lock:
             noncurrent_for_oid = self.noncurrent.get(u64(oid))

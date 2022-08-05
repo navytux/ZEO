@@ -547,6 +547,8 @@ class FullGenericTests(
 
         def T(tx, N):
             db = dbopen()
+            zstor = db.storage
+            zcache = zstor._cache
 
             def t_():
                 transaction.begin()
@@ -567,9 +569,20 @@ class FullGenericTests(
                     # print('FAIL')
                     msg  = "T%s: obj1.value (%d)  !=  obj2.value (%d)\n" % (
                           tx, i1, i2)
-                    msg += "obj1._p_serial: %s  obj2._p_serial: %s  zconn.at: %s" % (
+                    zat = zconn_at(zconn)
+                    msg += "obj1._p_serial: %s  obj2._p_serial: %s  zconn.at: %s\n" % (
                            tid_repr(obj1._p_serial), tid_repr(obj2._p_serial),
-                           tid_repr(zconn_at(zconn)))
+                           tid_repr(zat))
+
+                    msg += "zcache.loadBefore(obj1, zconn.at)  ->  "
+                    obj1cache = zcache.loadBefore(obj1._p_oid, at2before(zat))
+                    if obj1cache is None:
+                        msg += "None"
+                    else:
+                        print(repr(obj1cache))
+                        _, serial, end_tid = obj1cache
+                        msg += "serial: %s  end_tid: %s" % (
+                               tid_repr(serial), tid_repr(end_tid))
                     failure[tx] = msg
                     failed.set()
 
@@ -2158,6 +2171,9 @@ def zconn_at(zconn): # -> tid
 # specifies database state as "at".
 def before2at(before): # -> at
     return p64(u64(before) - 1)
+
+def at2before(at): # -> before
+    return p64(u64(at) + 1)
 
 
 if __name__ == "__main__":
