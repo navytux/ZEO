@@ -6,7 +6,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '1/15 * * * *'  # run 4x every hour
+    - cron: '5/15 * * * *'  # run 4x every hour
   # Allow to run this workflow manually from the Actions tab
   workflow_dispatch:
 
