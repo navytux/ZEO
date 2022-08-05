@@ -6,7 +6,6 @@ on:
   push:
   pull_request:
   schedule:
-    #- cron: '0 12 * * 0'  # run once a week on Sunday
     - cron: '1/15 * * * *'  # run 4x every hour
   # Allow to run this workflow manually from the Actions tab
   workflow_dispatch:
