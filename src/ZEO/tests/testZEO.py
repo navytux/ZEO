@@ -567,22 +567,37 @@ class FullGenericTests(
                 i2 = obj2.value
                 if i1 != i2:
                     # print('FAIL')
+                    zat     = zconn_at(zconn)
+                    zbefore = at2before(zat)
+
                     msg  = "T%s: obj1.value (%d)  !=  obj2.value (%d)\n" % (
                           tx, i1, i2)
-                    zat = zconn_at(zconn)
+
                     msg += "obj1._p_serial: %s  obj2._p_serial: %s  zconn.at: %s\n" % (
                            tid_repr(obj1._p_serial), tid_repr(obj2._p_serial),
                            tid_repr(zat))
 
                     msg += "zcache.loadBefore(obj1, zconn.at)  ->  "
-                    obj1cache = zcache.loadBefore(obj1._p_oid, at2before(zat))
+                    obj1cache = zcache.loadBefore(obj1._p_oid, zbefore)
                     if obj1cache is None:
                         msg += "None"
                     else:
-                        print(repr(obj1cache))
                         _, serial, end_tid = obj1cache
                         msg += "serial: %s  end_tid: %s" % (
                                tid_repr(serial), tid_repr(end_tid))
+                    msg += '\n'
+
+                    msg += "zstor.loadBefore(obj1, zconn.at)   ->  "
+                    zcache.clear()
+                    obj1data = zstor.loadBefore(obj1._p_oid, zbefore)
+                    if obj1data is None:
+                        msg += "None"
+                    else:
+                        _, serial, next_serial = obj1data
+                        msg += "serial: %s  next_serial: %s" % (
+                               tid_repr(serial), tid_repr(next_serial))
+                    msg += '\n'
+
                     failure[tx] = msg
                     failed.set()
 
