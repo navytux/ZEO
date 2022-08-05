@@ -577,26 +577,31 @@ class FullGenericTests(
                            tid_repr(obj1._p_serial), tid_repr(obj2._p_serial),
                            tid_repr(zat))
 
-                    msg += "zcache.loadBefore(obj1, zconn.at)  ->  "
-                    x = zcache.loadBefore(obj1._p_oid, zbefore)
-                    if x is None:
-                        msg += "None"
-                    else:
-                        _, serial, end_tid = x
-                        msg += "serial: %s  end_tid: %s" % (
-                               tid_repr(serial), tid_repr(end_tid))
-                    msg += '\n'
+                    msg += 'zcache.tracepath: %s\n' % zcache.tracepath
 
-                    msg += "zcache.loadBefore(obj2, zconn.at)  ->  "
-                    x = zcache.loadBefore(obj2._p_oid, zbefore)
-                    if x is None:
-                        msg += "None"
-                    else:
-                        _, serial, end_tid = x
-                        msg += "serial: %s  end_tid: %s" % (
-                               tid_repr(serial), tid_repr(end_tid))
-                    msg += '\n'
+                    for i in range(2):
+                        msg += "zcache.loadBefore(obj1, zconn.at)  ->  "
+                        x = zcache.loadBefore(obj1._p_oid, zbefore)
+                        if x is None:
+                            msg += "None"
+                        else:
+                            _, serial, end_tid = x
+                            msg += "serial: %s  end_tid: %s" % (
+                                   tid_repr(serial), tid_repr(end_tid))
+                        msg += '\n'
 
+                        msg += "zcache.loadBefore(obj2, zconn.at)  ->  "
+                        x = zcache.loadBefore(obj2._p_oid, zbefore)
+                        if x is None:
+                            msg += "None"
+                        else:
+                            _, serial, end_tid = x
+                            msg += "serial: %s  end_tid: %s" % (
+                                   tid_repr(serial), tid_repr(end_tid))
+                        msg += '\n'
+
+                        time.sleep(1)
+                        msg += 'sleep(1)\n'
 
                     zcache.clear()
 

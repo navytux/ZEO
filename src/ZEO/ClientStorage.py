@@ -825,14 +825,16 @@ class ClientStorage(ZODB.ConflictResolution.ConflictResolvingStorage):
     def tpc_vote(self, txn):
         """Storage API: vote on a transaction.
         """
+        #print('ClientStorage: tpc_vote')
         tbuf = self._check_trans(txn, 'tpc_vote')
         try:
 
             conflicts = True
             vote_attempts = 0
-            while conflicts and vote_attempts < 9:  # 9? Mainly avoid inf. loop
+            while conflicts and vote_attempts < 2:  # 9? Mainly avoid inf. loop
                 conflicts = False
                 for oid in self._call('vote', id(txn)) or ():
+                    #print('vote -> conflict  oid:', oid)
                     if isinstance(oid, dict):
                         # Conflict, let's try to resolve it
                         conflicts = True
@@ -844,19 +846,24 @@ class ClientStorage(ZODB.ConflictResolution.ConflictResolvingStorage):
                         self._async('storea', oid, committed, data, id(txn))
                         tbuf.resolve(oid, data)
                     else:
+                        #print('vote: server_resolve')
                         tbuf.server_resolve(oid)
 
                 vote_attempts += 1
 
         except POSException.StorageTransactionError:
+            print('vote: StorageTransactionError', err)
             # Hm, we got disconnected and reconnected bwtween
             # _check_trans and voting. Let's chack the transaction again:
             self._check_trans(txn, 'tpc_vote')
             raise
 
         except POSException.ConflictError as err:
+            print('\n\n\n')
+            print('vote: ConflictError', err)
             oid = getattr(err, 'oid', None)
             if oid is not None:
+                print('vote: ConflictError -> invalidate oid')
                 # This is a band-aid to help recover from a situation
                 # that shouldn't happen.  A Client somehow misses some
                 # invalidations and has out of date data in its
@@ -865,14 +872,20 @@ class ClientStorage(ZODB.ConflictResolution.ConflictResolvingStorage):
                 # (unresolved) conflict error, we assume that the
                 # cache entry is bad and invalidate it.
                 self._cache.invalidate(oid, None)
+            print('\n\n\n')
             raise
 
+        #print('voted')
         if tbuf.exception:
+            #print('tbuf.exception', tbuf.exception)
             raise tbuf.exception
 
         if tbuf.server_resolved or tbuf.client_resolved:
-            return list(tbuf.server_resolved) + list(tbuf.client_resolved)
+            x = list(tbuf.server_resolved) + list(tbuf.client_resolved)
+            #print('resolved', x)
+            return x
         else:
+            #print('voted without conflicts')
             return None
 
     def tpc_transaction(self):
@@ -1048,6 +1061,7 @@ class ClientStorage(ZODB.ConflictResolution.ConflictResolvingStorage):
     def serialnos(self, args):
         """Server callback to pass a list of changed (oid, serial) pairs.
         """
+        #print('ClientStorage.serialnos')
         self._tbuf.serialnos(args)
 
     def info(self, dict):

@@ -736,6 +736,7 @@ class ClientCache(object):
                 self.f.write(tid)
                 self._set_noncurrent(oid, saved_tid, ofs)
                 # 0x1C = invalidate (hit, saving non-current)
+                #print('cache: invalidate oid %r  tid %r  (hit, saving non-current)' % (oid, tid))
                 self._trace(0x1C, oid, tid)
 
     ##
@@ -747,6 +748,7 @@ class ClientCache(object):
         seek = self.f.seek
         read = self.f.read
         for oid, ofs in six.iteritems(self.current):
+            print('\n\ncache.contents -> f.seek + f.read\n\n')
             seek(ofs)
             status = read(1)
             assert status == b'a', (ofs, self.f.tell(), oid)
@@ -754,6 +756,7 @@ class ClientCache(object):
             assert saved_oid == oid, (ofs, self.f.tell(), oid, saved_oid)
             assert end_tid == z64, (ofs, self.f.tell(), oid)
             yield oid, tid
+        print('\n\ncache.contents done\n\n')
 
     def dump(self):
         from ZODB.utils import oid_repr
@@ -782,8 +785,12 @@ class ClientCache(object):
 
     def _setup_trace(self, path):
         _tracefile = None
+        if path is None:
+            fd, path = tempfile.mkstemp(prefix='ZEC', dir='/tmp')
+            os.close(fd)
         if path and os.environ.get("ZEO_CACHE_TRACE"):
             tfn = path + ".trace"
+            self.tracepath = tfn
             try:
                 _tracefile = open(tfn, "ab")
             except IOError as msg:

@@ -36,6 +36,8 @@ from . import base
 from .compat import asyncio, new_event_loop
 from .marshal import encoder, decoder
 
+from time import sleep
+
 logger = logging.getLogger(__name__)
 
 Fallback = object()
@@ -770,6 +772,10 @@ class Client(object):
             self.verify_invalidation_queue.append((tid, oids))
 
     def serialnos(self, serials):
+        #print('asyncio.client.serialnos', serials)
+        #import traceback as tb; tb.print_stack()
+        #sleep(1)
+        #print('.')
         # Method called by ZEO4 storage servers.
 
         # Before delegating, check for errors (likely ConflictErrors)
@@ -779,6 +785,7 @@ class Client(object):
         # back into us when there's an error.
         for oid in serials:
             if isinstance(oid, bytes):
+                print('X asyncio.client.serialnos', serials)
                 self.cache.invalidate(oid, None)
             else:
                 oid, serial = oid

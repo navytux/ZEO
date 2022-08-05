@@ -48,6 +48,8 @@ from ZODB.POSException import TransactionError, ReadOnlyError, ConflictError
 from ZODB.serialize import referencesf
 from ZODB.utils import oid_repr, p64, u64, z64
 
+from time import sleep
+
 ResolvedSerial = b'rs'
 
 logger = logging.getLogger('ZEO.StorageServer')
@@ -486,6 +488,7 @@ class ZEOStorage(object):
                     if serials:
                         self.serials.extend(serials)
 
+                #sleep(1)
                 self.client.serialnos(self.serials)
 
             except Exception:

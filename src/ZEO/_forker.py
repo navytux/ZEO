@@ -104,6 +104,7 @@ def runner(config, qin, qout, timeout=None,
         import threading
 
         if ZEO4_SERVER:
+            #print('\n\n\nAAAA\n\n\n')
             # XXX: test dependency. In practice this is
             # probably ok
             from ZEO.tests.ZEO4 import runzeo

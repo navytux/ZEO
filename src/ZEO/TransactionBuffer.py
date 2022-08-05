@@ -94,6 +94,7 @@ class TransactionBuffer(object):
 
     # Support ZEO4:
     def serialnos(self, args):
+        #print('TransactionBuffer.serialnos')
         for oid in args:
             if isinstance(oid, bytes):
                 self.server_resolved.add(oid)
