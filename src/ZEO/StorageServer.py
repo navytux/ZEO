@@ -1105,7 +1105,7 @@ class StorageServer:
         else:
             assert info is not None
 
-        for p in self.connections[storage_id]:
+        for p in self.connections[storage_id][:]:
             try:
                 if invalidated is not None and p is not conn:
                     p.client.invalidateTransaction(tid, invalidated)
