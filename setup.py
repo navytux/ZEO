@@ -16,7 +16,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-version = '6.0.1.dev0'
+version = '6.1.dev0'
 
 install_requires = [
     'ZODB >= 5.1.1',
@@ -58,25 +58,24 @@ setup(name="ZEO",
       keywords=['database', 'zodb'],
       packages=find_packages('src'),
       package_dir={'': 'src'},
-      license="ZPL 2.1",
+      license="ZPL-2.1",
       platforms=["any"],
       classifiers=[
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: Zope Public License",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11",
-        "Programming Language :: Python :: 3.12",
-        "Programming Language :: Python :: Implementation :: CPython",
-        "Programming Language :: Python :: Implementation :: PyPy",
-        "Topic :: Database",
-        "Topic :: Software Development :: Libraries :: Python Modules",
-        "Operating System :: Microsoft :: Windows",
-        "Operating System :: Unix",
-        "Framework :: ZODB",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: Zope Public License",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Topic :: Database",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "Operating System :: Microsoft :: Windows",
+          "Operating System :: Unix",
+          "Framework :: ZODB",
       ],
       extras_require={
           'test': tests_require,
@@ -102,5 +101,5 @@ setup(name="ZEO",
       zeo-nagios = ZEO.nagios:main
       """,
       include_package_data=True,
-      python_requires='>=3.7',
+      python_requires='>=3.9',
       )
